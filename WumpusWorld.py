@@ -13,7 +13,7 @@ class Wumpus():
         # Board with all secrets uncovered
         # The teacher's manual of game boards
         #self.solved = [ [ Tile(visited=True) for t in range(size)] for i in range(size) ]
-        
+
         self.player = Player([0, 0])
         self.world[2][2].add_wumpus()
         self.world[5][5].add_pit()
@@ -48,32 +48,32 @@ class Wumpus():
                         self.world[i-1][j].add_breeze()
                     if i != self.size - 1:
                         self.world[i+1][j].add_breeze()
-                   
-            
+
+
         # generate random gold location, can be same as Wumpus
-        
-    
+
+
     def print_board(self):
         """ Printing the board, used for the wumpus world """
         for i in range(self.size):
             for j in range(self.size):
                 if self.player.location == [i, j]:
-                    print self.player.character,
+                    print(self.player.character)
                 elif not self.world[i][j].visited:
-                    print " # ",
+                    print(" # ",end="")
                 elif self.world[i][j].has_death():
-                    print " & ",
+                    print(" & ",end="")
                 elif self.world[i][j].has_hazard():
-                    print " ? ",
+                    print(" ? ",end="")
                 elif self.world[i][j].has_gold():
-                    print " $ ",
+                    print(" $ ",end="")
                 else:
-                    print " # ",
-            print
+                    print(" # ",end="")
+            print("-")
     def message(self, msg1, msg2="", msg3=" "):
-        """ output a message to the screen of a specific format 
+        """ output a message to the screen of a specific format
 
-        
+
         EXAMPLE
         ====================================
         | You are facing south [1, 2]
@@ -87,22 +87,22 @@ class Wumpus():
         =====================================
 
         """
-        print "==========================================="
-        print "|%s" % msg2 # status messages (location, contents of tile)
-        print "|%s" % msg1 # main message
+        print("===========================================")
+        print("|%s" % msg2) # status messages (location, contents of tile)
+        print("|%s" % msg1) # main message
         for m in msg3:
-            print "|%s" % m # personalized message based on context
-        print "==========================================="
+            print("|%s" % m) # personalized message based on context
+        print("===========================================")
     def game_loop(self):
         """ Game driver """
         i, j = self.player.get_location()
-        # resolve 
+        # resolve
         last_cmd_msg = "Welcome to the Wumpus World"
         while self.player.alive and not self.player.has_gold:
 
             self.message(last_cmd_msg, "You are facing %s %s" % (self.player.direction, self.player.location))
             self.print_board()
-            cmd = raw_input("> ")
+            cmd = input("> ")
             if cmd == "q":
                 last_cmd_msg = "Good bye!"
                 break
@@ -137,21 +137,21 @@ class Wumpus():
                 pass
             else:
                 last_cmd_msg = "Sorry, didn't understand that command"
-            
+
             i, j = self.player.get_location()
             # check for updates to the board
             if self.player.location == self.wumpus.location:
                 self.player.alive = False
                 last_cmd_msg = "You have met with the Wumpus [RIP]"
-            
-            elif self.world[i][j].has_gold(): 
+
+            elif self.world[i][j].has_gold():
                 self.player.has_gold = True
                 last_cmd_msg = "$$$ Congratulations $$$"
 
             elif self.world[i][j].pit:
                 self.player.alive = False
                 last_cmd_msg = "Your screams become hard to hear as you descend [RIP]"
-            
+
             elif self.world[i][j].breeze:
                 self.world[i][j].visit()
                 last_cmd_msg = "Is it cold in here, or is it just me?"
@@ -161,4 +161,3 @@ class Wumpus():
 
 
         self.message(last_cmd_msg, "You are facing %s %s" % (self.player.direction, self.player.location))
-       
